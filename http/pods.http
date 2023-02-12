@@ -1,0 +1,25 @@
+@baseURL = https://tech-assessment-ayodejio.assessment.jdm.okteto.net
+
+###
+# OK route
+GET {{ baseURL }}
+
+###
+# Get Pods Count 
+GET {{ baseURL }}/pods/count
+
+###
+# Get All Pods 
+GET {{ baseURL }}/pods
+
+###
+# Get All Pods Sorted By Name In Ascending Order
+GET {{ baseURL }}/pods?sort=name
+
+###
+# Get All Pods Sorted By Age In Descending Order
+GET {{ baseURL }}/pods?sort=age&sortOrder=desc
+
+###
+# Get All Pods Sorted By Number Of Restarts In Ascending Order
+GET {{ baseURL }}/pods?sort=restart_count&sortOrder=asc

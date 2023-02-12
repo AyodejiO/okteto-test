@@ -1,0 +1,23 @@
+build:
+  tech-assessment:
+    image: dekoy/okteto-assess:latest
+    context: .
+
+deploy:
+  - kubectl apply -f k8s.yml
+
+dev:
+  tech-assessment:
+    image: dekoy/okteto-assess:latest
+    command: bash
+    sync:
+      - .:/usr/src/app
+    volumes:
+      - /go
+      - /root/.cache
+    securityContext:
+      capabilities:
+        add:
+          - SYS_PTRACE
+    forward:
+      - 8080:8080

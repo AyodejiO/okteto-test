@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-assessment
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: tech-assessment
+  template:
+    metadata:
+      labels:
+        app: tech-assessment
+    spec:
+      containers:
+      - image: dekoy/okteto-assess:latest
+        name: tech-assessment
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tech-assessment
+spec:
+  type: ClusterIP
+  ports:
+  - name: "tech-assessment"
+    port: 8080
+  selector:
+    app: tech-assessment
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tech-assessment
+  annotations:
+    dev.okteto.com/generate-host: tech-assessment
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: tech-assessment
+            port:
+              number: 8080
+        path: /
+        pathType: ImplementationSpecific
