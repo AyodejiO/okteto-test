@@ -21,33 +21,14 @@ type PodsExpectedResponse struct {
 	} `json:"data"`
 }
 
-var ph PodHandler 
-
-var pods []v1.Pod
-
-func init() {
-	clientset := tests.GetTestClientset()
-	podService := service.NewPodService(clientset)
-	ph.service = podService
-
-	// create Pods
-	pods = make([]v1.Pod, 0)
-	pods = append(pods, tests.GeneratePodTemplate("pod1", 2))
-	pods = append(pods, tests.GeneratePodTemplate("pod2", 1))
-
-	// add Pods to clientset
-	for _, pod := range pods {
-		tests.CreateTestPod(clientset, pod)
-	}
-}
-
-func setup() PodHandler {
+func setup(t *testing.T) PodHandler {
+	t.Helper()
 	clientset := tests.GetTestClientset()
 	podService := service.NewPodService(clientset)
 	ph := PodHandler{service: podService}
 
 	// create Pods
-	pods = make([]v1.Pod, 0)
+	pods := make([]v1.Pod, 0)
 	pods = append(pods, tests.GeneratePodTemplate("pod1", 2))
 	pods = append(pods, tests.GeneratePodTemplate("pod2", 1))
 
@@ -60,7 +41,7 @@ func setup() PodHandler {
 }
 
 func TestGetPodsCountHandler(t *testing.T) {
-	ph = setup()
+	ph := setup(t)
 	req, err := http.NewRequest("GET", "/pods/count", nil)
 	if err != nil {
 			t.Fatal(err)
@@ -93,7 +74,7 @@ func TestGetPodsCountHandler(t *testing.T) {
 }
 
 func TestGetPodsHandler(t *testing.T) {
-	ph = setup()
+	ph := setup(t)
 	req, err := http.NewRequest("GET", "/pods", nil)
 	if err != nil {
 			t.Fatal(err)

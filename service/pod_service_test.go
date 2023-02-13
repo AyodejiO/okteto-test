@@ -8,7 +8,8 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-func setup() []v1.Pod {
+func setup(t *testing.T) []v1.Pod {
+	t.Helper()
 	// create Pods
 	pods := make([]v1.Pod, 0)
 	pods = append(pods, tests.GeneratePodTemplate("pod1", 2))
@@ -61,7 +62,7 @@ func TestGetPods(t *testing.T) {
 }
 
 func TestSortPodsByName(t *testing.T) {
-	pods := setup()	
+	pods := setup(t)	
 	sortedPods := SortPods(pods, "name", "desc")
 
 	if sortedPods[0].ObjectMeta.Name != "pod2" {
@@ -70,7 +71,7 @@ func TestSortPodsByName(t *testing.T) {
 }
 
 func TestSortPodsByAge(t *testing.T) {
-	pods := setup()	
+	pods := setup(t)	
 	sortedPods := SortPods(pods, "age", "desc")
 
 	if sortedPods[0].ObjectMeta.Name != "pod2" {
@@ -79,7 +80,7 @@ func TestSortPodsByAge(t *testing.T) {
 }
 
 func TestSortPodsByRestartCountAsc(t *testing.T) {
-	pods := setup()	
+	pods := setup(t)	
 	sortedPods := SortPods(pods, "restart_count", "")
 
 	if sortedPods[0].ObjectMeta.Name != "pod2" {
