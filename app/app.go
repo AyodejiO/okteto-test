@@ -74,7 +74,7 @@ func Start() {
 	sanityCheck()
 	clientset := getK8sClient()
 
-	ph := PodHandlers{service.NewPodService(clientset)}
+	ph := PodHandler{service.NewPodService(clientset)}
 
 	router := mux.NewRouter()
 

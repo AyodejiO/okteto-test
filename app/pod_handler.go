@@ -6,13 +6,19 @@ import (
 
 	"github.com/AyodejiO/okteto/dto"
 	"github.com/AyodejiO/okteto/service"
+	v1 "k8s.io/api/core/v1"
 )
 
-type PodHandlers struct {
-	service service.PodService
+type PodService interface {
+	GetPods(namespace string) ([]v1.Pod, error)
+	GetPodsCount(namespace string) (int, error)
 }
 
-func (h PodHandlers) GetPodsCount(w http.ResponseWriter, r *http.Request) {
+type PodHandler struct {
+	service PodService
+}
+
+func (h PodHandler) GetPodsCount(w http.ResponseWriter, r *http.Request) {
 	namespace := os.Getenv("NAMESPACE")
 
 	if count, err := h.service.GetPodsCount(namespace) ; err != nil {
@@ -22,7 +28,7 @@ func (h PodHandlers) GetPodsCount(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h PodHandlers) GetPods(w http.ResponseWriter, r *http.Request) {
+func (h PodHandler) GetPods(w http.ResponseWriter, r *http.Request) {
 	namespace := os.Getenv("NAMESPACE")
 
 	sort := r.URL.Query().Get("sort")

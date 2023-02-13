@@ -9,16 +9,11 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-type PodService interface {
-	GetPods(namespace string) ([]v1.Pod, error)
-	GetPodsCount(namespace string) (int, error)
-}
-
-type DefaultPodService struct {
+type PodService struct {
 	clientset kubernetes.Interface
 }
 
-func (s DefaultPodService) GetPods(namespace string) ([]v1.Pod, error) {
+func (s PodService) GetPods(namespace string) ([]v1.Pod, error) {
 	pods, err := s.clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -27,7 +22,7 @@ func (s DefaultPodService) GetPods(namespace string) ([]v1.Pod, error) {
 	return pods.Items, nil
 }
 
-func (s DefaultPodService) GetPodsCount(namespace string) (int, error) {
+func (s PodService) GetPodsCount(namespace string) (int, error) {
 	pods, err := s.clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return 0, err
@@ -91,6 +86,6 @@ func sortByAge(pods []v1.Pod, asc bool) {
 	}
 }
 
-func NewPodService(clientset kubernetes.Interface) DefaultPodService {
-	return DefaultPodService{clientset}
+func NewPodService(clientset kubernetes.Interface) PodService {
+	return PodService{clientset}
 }
