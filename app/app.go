@@ -47,7 +47,7 @@ func writeResponse(w http.ResponseWriter, code int, success bool, data interface
 	}
 }
 
-func GetIndex(w http.ResponseWriter, r *http.Request) {
+func GetIndexHandler(w http.ResponseWriter, r *http.Request) {
 	writeResponse(
 		w, 
 		http.StatusOK, 
@@ -55,6 +55,17 @@ func GetIndex(w http.ResponseWriter, r *http.Request) {
 		map[string]interface{}{
 			"message": "Welcome to the Okteto API",
 			"timestamp": time.Now().Format(time.RFC3339),
+		},
+	)
+}
+
+func Custom404Handler(w http.ResponseWriter, r *http.Request) {
+	writeResponse(
+		w, 
+		http.StatusNotFound, 
+		false, 
+		map[string]interface{}{
+			"message": "Requested resource not found",
 		},
 	)
 }
@@ -67,8 +78,9 @@ func Start() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", GetIndex).Methods("GET")
-	router.HandleFunc("/pods/count", ph.GetPodCount).Methods("GET")
+	router.HandleFunc("/", GetIndexHandler).Methods("GET")
+	router.NotFoundHandler = http.HandlerFunc(Custom404Handler)
+	router.HandleFunc("/pods/count", ph.GetPodsCount).Methods("GET")
 	router.HandleFunc("/pods", ph.GetPods).Methods("GET")
 
 	// start the server on port 8080
